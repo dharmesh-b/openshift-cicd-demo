@@ -152,12 +152,12 @@ command.install() {
   cd spring-petclinic 
   git config user.email "openshift-pipelines@redhat.com"
   git config user.name "openshift-pipelines"
-  cat .tekton/build.yaml | grep -A 2 GIT_REPOSITORY
+  cat .tekton/build.yaml | grep -A 2 GIT_REPOSITORY || true
   cross_sed "s#https://github.com/dharmesh-b/spring-petclinic-config#https://$GITEA_HOSTNAME/gitea/spring-petclinic-config#g" .tekton/build.yaml
-  cat .tekton/build.yaml | grep -A 2 GIT_REPOSITORY
+  cat .tekton/build.yaml | grep -A 2 GIT_REPOSITORY || true
   git status
   git add .tekton/build.yaml
-  git commit -m "Updated manifests git url"
+  git commit -m "Updated manifests git url" || true
   git remote add auth-origin https://gitea:openshift@$GITEA_HOSTNAME/gitea/spring-petclinic
   git push auth-origin main
   popd
