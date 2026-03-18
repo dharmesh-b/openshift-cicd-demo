@@ -148,7 +148,7 @@ command.install() {
   info "Updating pipelinerun values for the demo environment"
   tmp_dir=$(mktemp -d)
   pushd $tmp_dir
-  git clone https://$GITEA_HOSTNAME/gitea/spring-petclinic 
+  git clone -b main https://$GITEA_HOSTNAME/gitea/spring-petclinic 
   cd spring-petclinic 
   git config user.email "openshift-pipelines@redhat.com"
   git config user.name "openshift-pipelines"
