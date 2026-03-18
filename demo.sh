@@ -159,7 +159,7 @@ command.install() {
   git add .tekton/build.yaml
   git commit -m "Updated manifests git url"
   git remote add auth-origin https://gitea:openshift@$GITEA_HOSTNAME/gitea/spring-petclinic
-  git push auth-origin cicd-demo
+  git push auth-origin main
   popd
 
   info "Configuring pipelines-as-code"
@@ -282,7 +282,7 @@ command.start() {
   git add readme.md
   git commit -m "Updated readme.md"
   git remote add auth-origin https://gitea:openshift@$GITEA_HOSTNAME/gitea/spring-petclinic
-  git push auth-origin cicd-demo
+  git push auth-origin main
   popd
 }
 
