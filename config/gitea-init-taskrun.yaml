@@ -29,7 +29,7 @@ spec:
               fieldPath: metadata.namespace
     steps:
       - name: init-gitea
-        image: quay.io/dharmesh-b/python-oc
+        image: quay.io/rh_ee_dbhamre/python-oc
         script: |
           #!/usr/bin/env python3
 
