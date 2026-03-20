@@ -134,21 +134,27 @@ command.install() {
   done
   
   echo "Waiting for source code to be imported to Gitea..."
-  while true; 
+  MAX_RETRIES=60
+  COUNT=0
+  while true;
   do
-    result=$(curl --write-out '%{response_code}' --head --silent --output /dev/null https://$GITEA_HOSTNAME/gitea/spring-petclinic)
-    if [ "$result" == "200" ]; then
-	    break
+    COUNT=$((COUNT+1))
+    if [ $COUNT -ge $MAX_RETRIES ]; then
+      err "Timed out waiting for Gitea repo content after $MAX_RETRIES attempts"
     fi
-    wait_seconds 5
+    HTTP_CODE=$(curl -k --write-out "%{response_code}" --silent --output /dev/null -u gitea:openshift https://$GITEA_HOSTNAME/api/v1/repos/gitea/spring-petclinic/contents/.tekton/build.yaml)
+    echo "Attempt $COUNT/$MAX_RETRIES - .tekton/build.yaml HTTP status: $HTTP_CODE"
+    if [ "$HTTP_CODE" == "200" ]; then
+      echo "Source code successfully imported!"
+      break
+    fi
+    sleep 10
   done
-  
-  wait_seconds 5
 
   info "Updating pipelinerun values for the demo environment"
   tmp_dir=$(mktemp -d)
   pushd $tmp_dir
-  git clone -b main https://$GITEA_HOSTNAME/gitea/spring-petclinic 
+  git clone https://$GITEA_HOSTNAME/gitea/spring-petclinic 
   cd spring-petclinic 
   git config user.email "openshift-pipelines@redhat.com"
   git config user.name "openshift-pipelines"
@@ -274,7 +280,7 @@ command.start() {
   info "Pushing a change to https://$GITEA_HOSTNAME/gitea/spring-petclinic-config"
   tmp_dir=$(mktemp -d)
   pushd $tmp_dir
-  git clone -b main https://$GITEA_HOSTNAME/gitea/spring-petclinic 
+  git clone https://$GITEA_HOSTNAME/gitea/spring-petclinic 
   cd spring-petclinic 
   git config user.email "openshift-pipelines@redhat.com"
   git config user.name "openshift-pipelines"
